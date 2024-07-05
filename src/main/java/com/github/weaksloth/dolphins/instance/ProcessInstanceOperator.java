@@ -33,15 +33,12 @@ public class ProcessInstanceOperator extends AbstractOperator {
   public Boolean start(Long projectCode, ProcessInstanceCreateParam processInstanceCreateParam) {
     String url = dolphinAddress + "/projects/" + projectCode + "/executors/start-process-instance";
     log.info("start process instance ,url:{}", url);
-    try {
-      HttpRestResult<JsonNode> restResult =
-          dolphinsRestTemplate.postForm(
-              url, getHeader(), processInstanceCreateParam, JsonNode.class);
-      log.info("start process response:{}", restResult);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException("start dolphin scheduler process instance fail", e);
+    HttpRestResult<JsonNode> restResult = dolphinsRestTemplate.postForm(url, getHeader(), processInstanceCreateParam, JsonNode.class);
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return true;
   }
 
   /**
@@ -128,24 +125,28 @@ public class ProcessInstanceOperator extends AbstractOperator {
         new ProcessInstanceRunParam()
             .setProcessInstanceId(processInstanceId)
             .setExecuteType(executeType);
-    try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.postForm(url, getHeader(), reProcessInstanceRunParam, String.class);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException(executeType + " dolphin scheduler process instance fail", e);
+
+    HttpRestResult<String> restResult =
+            dolphinsRestTemplate.postForm(url, getHeader(), reProcessInstanceRunParam, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return true;
   }
 
   public Boolean delete(Long projectCode, Long processInstanceId) {
     String url =
         dolphinAddress + "/projects/" + projectCode + "/process-instances/" + processInstanceId;
-    try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException("delete dolphin scheduler process instance fail", e);
+
+    HttpRestResult<String> restResult =
+            dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return true;
   }
 }

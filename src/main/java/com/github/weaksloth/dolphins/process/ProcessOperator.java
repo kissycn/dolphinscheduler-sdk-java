@@ -44,16 +44,12 @@ public class ProcessOperator extends AbstractOperator {
             .addParam("pageSize", String.valueOf(size))
             .addParam("searchVal", searchVal);
 
-    try {
-      HttpRestResult<JsonNode> restResult =
-          dolphinsRestTemplate.get(url, getHeader(), query, JsonNode.class);
+    HttpRestResult<JsonNode> restResult =
+        dolphinsRestTemplate.get(url, getHeader(), query, JsonNode.class);
 
-      return JacksonUtils.parseObject(
-              restResult.getData().toString(), new TypeReference<PageInfo<ProcessDefineResp>>() {})
-          .getTotalList();
-    } catch (Exception e) {
-      throw new DolphinException("list dolphin scheduler workflow fail", e);
-    }
+    return JacksonUtils.parseObject(
+            restResult.getData().toString(), new TypeReference<PageInfo<ProcessDefineResp>>() {})
+        .getTotalList();
   }
 
   /**
@@ -70,18 +66,14 @@ public class ProcessOperator extends AbstractOperator {
         "create process definition, url:{}, param:{}",
         url,
         JacksonUtils.toJSONString(processDefineParam));
-    try {
-      HttpRestResult<ProcessDefineResp> restResult =
-          dolphinsRestTemplate.postForm(
-              url, getHeader(), processDefineParam, ProcessDefineResp.class);
-      if (restResult.getSuccess()) {
-        return restResult.getData();
-      } else {
-        log.error("dolphin scheduler response:{}", restResult);
-        throw new DolphinException("create dolphin scheduler workflow fail");
-      }
-    } catch (Exception e) {
-      throw new DolphinException("create dolphin scheduler workflow fail", e);
+    HttpRestResult<ProcessDefineResp> restResult =
+        dolphinsRestTemplate.postForm(
+            url, getHeader(), processDefineParam, ProcessDefineResp.class);
+    if (restResult.getSuccess()) {
+      return restResult.getData();
+    } else {
+      log.error("dolphin scheduler response:{}", restResult);
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
   }
 
@@ -98,18 +90,13 @@ public class ProcessOperator extends AbstractOperator {
       Long projectCode, ProcessDefineParam processDefineParam, Long processCode) {
     String url = dolphinAddress + "/projects/" + projectCode + "/process-definition/" + processCode;
     log.info("update process definition, url:{}, param:{}", url, processDefineParam);
-    try {
-      HttpRestResult<ProcessDefineResp> restResult =
-          dolphinsRestTemplate.putForm(
-              url, getHeader(), processDefineParam, ProcessDefineResp.class);
-      if (restResult.getSuccess()) {
-        return restResult.getData();
-      } else {
-        log.error("dolphin scheduler response:{}", restResult);
-        throw new DolphinException("update dolphin scheduler workflow fail");
-      }
-    } catch (Exception e) {
-      throw new DolphinException("update dolphin scheduler workflow fail", e);
+    HttpRestResult<ProcessDefineResp> restResult =
+        dolphinsRestTemplate.putForm(url, getHeader(), processDefineParam, ProcessDefineResp.class);
+    if (restResult.getSuccess()) {
+      return restResult.getData();
+    } else {
+      log.error("dolphin scheduler response:{}", restResult);
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
   }
 
@@ -123,13 +110,15 @@ public class ProcessOperator extends AbstractOperator {
   public Boolean delete(Long projectCode, Long processCode) {
     String url = dolphinAddress + "/projects/" + projectCode + "/process-definition/" + processCode;
     log.info("delete process definition,processCode:{}, url:{}", processCode, url);
-    try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException("delete dolphin scheduler workflow fail", e);
+
+    HttpRestResult<String> restResult =
+        dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return true;
   }
 
   /**
@@ -140,16 +129,37 @@ public class ProcessOperator extends AbstractOperator {
    * @param processReleaseParam param
    * @return true for success,otherwise false
    */
-  public Boolean release(Long projectCode, Long code, ProcessReleaseParam processReleaseParam) {
+  public boolean release(Long projectCode, Long code, ProcessReleaseParam processReleaseParam)
+      throws DolphinException {
     String url =
         dolphinAddress + "/projects/" + projectCode + "/process-definition/" + code + "/release";
     log.info("release process definition,url:{}, param:{}", url, processReleaseParam);
+
+    HttpRestResult<String> restResult =
+        dolphinsRestTemplate.postForm(url, getHeader(), processReleaseParam, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
+    }
+
+    return true;
+  }
+
+  public Boolean verifyName(Long projectCode, String processName) {
+    String url = dolphinAddress + "/projects/" + projectCode + "/process-definition/verify-name";
+    Query query =
+        new Query().addParam("name", processName).addParam("code", projectCode.toString());
+
     try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.postForm(url, getHeader(), processReleaseParam, String.class);
+      HttpRestResult<JsonNode> restResult =
+          dolphinsRestTemplate.get(url, getHeader(), query, JsonNode.class);
+
+      if (restResult.getFailed()) {
+        throw new DolphinException(restResult.getCode(), restResult.getMsg());
+      }
       return restResult.getSuccess();
     } catch (Exception e) {
-      throw new DolphinException("release dolphin scheduler workflow fail", e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -160,7 +170,7 @@ public class ProcessOperator extends AbstractOperator {
    * @param code workflow id
    * @return true for success,otherwise false
    */
-  public Boolean online(Long projectCode, Long code) {
+  public boolean online(Long projectCode, Long code) throws DolphinException {
     return release(projectCode, code, ProcessReleaseParam.newOnlineInstance());
   }
 
@@ -171,7 +181,7 @@ public class ProcessOperator extends AbstractOperator {
    * @param code workflow id
    * @return true for success,otherwise false
    */
-  public Boolean offline(Long projectCode, Long code) {
+  public boolean offline(Long projectCode, Long code) throws DolphinException {
     return release(projectCode, code, ProcessReleaseParam.newOfflineInstance());
   }
 
