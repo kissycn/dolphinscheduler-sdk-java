@@ -118,7 +118,7 @@ public class ProcessOperator extends AbstractOperator {
       throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
 
-    return true;
+    return restResult.getSuccess();
   }
 
   /**
@@ -142,7 +142,7 @@ public class ProcessOperator extends AbstractOperator {
       throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
 
-    return true;
+    return restResult.getSuccess();
   }
 
   public Boolean verifyName(Long projectCode, String processName) {

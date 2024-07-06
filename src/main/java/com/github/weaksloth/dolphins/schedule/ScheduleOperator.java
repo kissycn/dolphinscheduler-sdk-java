@@ -27,21 +27,18 @@ public class ScheduleOperator extends AbstractOperator {
    * @param scheduleDefineParam define param
    * @return {@link ScheduleInfoResp}
    */
-  public ScheduleInfoResp create(Long projectCode, ScheduleDefineParam scheduleDefineParam) {
+  public ScheduleInfoResp create(Long projectCode, ScheduleDefineParam scheduleDefineParam)
+      throws DolphinException {
     String url = dolphinAddress + "/projects/" + projectCode + "/schedules";
     log.info("create schedule, url:{}, defineParam:{}", url, scheduleDefineParam);
-    try {
-      HttpRestResult<ScheduleInfoResp> restResult =
-          dolphinsRestTemplate.postForm(
-              url, getHeader(), scheduleDefineParam, ScheduleInfoResp.class);
-      if (restResult.getSuccess()) {
-        return restResult.getData();
-      } else {
-        log.error("dolphin scheduler response:{}", restResult);
-        throw new DolphinException("create dolphin scheduler schedule fail");
-      }
-    } catch (Exception e) {
-      throw new DolphinException("create dolphin scheduler schedule fail", e);
+    HttpRestResult<ScheduleInfoResp> restResult =
+        dolphinsRestTemplate.postForm(
+            url, getHeader(), scheduleDefineParam, ScheduleInfoResp.class);
+    if (restResult.getSuccess()) {
+      return restResult.getData();
+    } else {
+      log.error("dolphin scheduler response:{}", restResult);
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
   }
 
@@ -59,6 +56,7 @@ public class ScheduleOperator extends AbstractOperator {
             .addParam("pageNo", "1")
             .addParam("pageSize", "10")
             .addParam("processDefinitionCode", String.valueOf(processDefinitionCode));
+
     try {
       HttpRestResult<JsonNode> stringHttpRestResult =
           dolphinsRestTemplate.get(url, getHeader(), query, JsonNode.class);
@@ -79,21 +77,19 @@ public class ScheduleOperator extends AbstractOperator {
    * @return {@link ScheduleInfoResp}
    */
   public ScheduleInfoResp update(
-      Long projectCode, Long scheduleId, ScheduleDefineParam scheduleDefineParam) {
+      Long projectCode, Long scheduleId, ScheduleDefineParam scheduleDefineParam)
+      throws DolphinException {
     String url = dolphinAddress + "/projects/" + projectCode + "/schedules/" + scheduleId;
     log.info("update schedule, url:{}, defineParam:{}", url, scheduleDefineParam);
-    try {
-      HttpRestResult<ScheduleInfoResp> restResult =
-          dolphinsRestTemplate.putForm(
-              url, getHeader(), scheduleDefineParam, ScheduleInfoResp.class);
-      if (restResult.getSuccess()) {
-        return restResult.getData();
-      } else {
-        log.error("dolphin scheduler response:{}", restResult);
-        throw new DolphinException("update dolphin scheduler schedule fail");
-      }
-    } catch (Exception e) {
-      throw new DolphinException("update dolphin scheduler schedule fail", e);
+
+    HttpRestResult<ScheduleInfoResp> restResult =
+        dolphinsRestTemplate.putForm(url, getHeader(), scheduleDefineParam, ScheduleInfoResp.class);
+
+    if (restResult.getSuccess()) {
+      return restResult.getData();
+    } else {
+      log.error("dolphin scheduler response:{}", restResult);
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
   }
 
@@ -104,17 +100,19 @@ public class ScheduleOperator extends AbstractOperator {
    * @param scheduleId id
    * @return true for success,otherwise false
    */
-  public Boolean online(Long projectCode, Long scheduleId) {
+  public Boolean online(Long projectCode, Long scheduleId) throws DolphinException {
     String url =
         dolphinAddress + "/projects/" + projectCode + "/schedules/" + scheduleId + "/online";
     log.info("online schedule, scheduleId:{}, url:{}", scheduleId, url);
-    try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.postForm(url, getHeader(), null, String.class);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException("online dolphin scheduler schedule fail", e);
+
+    HttpRestResult<String> restResult =
+        dolphinsRestTemplate.postForm(url, getHeader(), null, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return restResult.getSuccess();
   }
 
   /**
@@ -128,13 +126,15 @@ public class ScheduleOperator extends AbstractOperator {
     String url =
         dolphinAddress + "/projects/" + projectCode + "/schedules/" + scheduleId + "/offline";
     log.info("offline schedule, scheduleId:{}, url:{}", scheduleId, url);
-    try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.postForm(url, getHeader(), null, String.class);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException("offline dolphin scheduler schedule fail", e);
+
+    HttpRestResult<String> restResult =
+        dolphinsRestTemplate.postForm(url, getHeader(), null, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return restResult.getSuccess();
   }
 
   /**
@@ -147,12 +147,14 @@ public class ScheduleOperator extends AbstractOperator {
   public Boolean delete(Long projectCode, Long scheduleId) {
     String url = dolphinAddress + "/projects/" + projectCode + "/schedules/" + scheduleId;
     log.info("offline schedule, scheduleId:{}, url:{}", scheduleId, url);
-    try {
-      HttpRestResult<String> restResult =
-          dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
-      return restResult.getSuccess();
-    } catch (Exception e) {
-      throw new DolphinException("delete dolphin scheduler schedule fail", e);
+
+    HttpRestResult<String> restResult =
+        dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
+
+    return restResult.getSuccess();
   }
 }

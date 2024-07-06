@@ -33,7 +33,8 @@ public class ProcessInstanceOperator extends AbstractOperator {
   public Boolean start(Long projectCode, ProcessInstanceCreateParam processInstanceCreateParam) {
     String url = dolphinAddress + "/projects/" + projectCode + "/executors/start-process-instance";
     log.info("start process instance ,url:{}", url);
-    HttpRestResult<JsonNode> restResult = dolphinsRestTemplate.postForm(url, getHeader(), processInstanceCreateParam, JsonNode.class);
+    HttpRestResult<JsonNode> restResult =
+        dolphinsRestTemplate.postForm(url, getHeader(), processInstanceCreateParam, JsonNode.class);
     if (restResult.getFailed()) {
       throw new DolphinException(restResult.getCode(), restResult.getMsg());
     }
@@ -127,7 +128,7 @@ public class ProcessInstanceOperator extends AbstractOperator {
             .setExecuteType(executeType);
 
     HttpRestResult<String> restResult =
-            dolphinsRestTemplate.postForm(url, getHeader(), reProcessInstanceRunParam, String.class);
+        dolphinsRestTemplate.postForm(url, getHeader(), reProcessInstanceRunParam, String.class);
 
     if (restResult.getFailed()) {
       throw new DolphinException(restResult.getCode(), restResult.getMsg());
@@ -141,7 +142,7 @@ public class ProcessInstanceOperator extends AbstractOperator {
         dolphinAddress + "/projects/" + projectCode + "/process-instances/" + processInstanceId;
 
     HttpRestResult<String> restResult =
-            dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
+        dolphinsRestTemplate.delete(url, getHeader(), null, String.class);
 
     if (restResult.getFailed()) {
       throw new DolphinException(restResult.getCode(), restResult.getMsg());
