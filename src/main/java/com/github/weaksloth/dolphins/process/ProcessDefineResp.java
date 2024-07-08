@@ -1,6 +1,7 @@
 package com.github.weaksloth.dolphins.process;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.weaksloth.dolphins.schedule.ScheduleInfoResp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,8 @@ public class ProcessDefineResp {
 
   /** schedule release state : online/offline */
   private String scheduleReleaseState;
+
+  private ScheduleInfoResp schedule;
 
   /** process warning time out. unit: minute */
   private int timeout;
