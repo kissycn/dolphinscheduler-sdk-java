@@ -2,6 +2,7 @@ package com.github.weaksloth.dolphins.task;
 
 import com.github.weaksloth.dolphins.BaseTest;
 import com.github.weaksloth.dolphins.process.*;
+import com.github.weaksloth.dolphins.process.task.DataxTaskDefinitionResp;
 import com.github.weaksloth.dolphins.util.TaskDefinitionUtils;
 import com.github.weaksloth.dolphins.util.TaskLocationUtils;
 import com.github.weaksloth.dolphins.util.TaskRelationUtils;
@@ -184,5 +185,14 @@ public class TaskTest extends BaseTest {
     List<Long> taskCodes =
         super.getClient().opsForProcess().generateTaskCode(projectCode, expectedCodeNumber);
     Assert.assertEquals(expectedCodeNumber, taskCodes.size());
+  }
+
+  @Test
+  public void testGetDataxTask(){
+    DataxTaskDefinitionResp detail = getClient().opsForTask().detail(projectCode, 113477447296544L);
+
+    System.out.println(detail);
+    //Long taskCode = getClient().opsForProcess().
+
   }
 }

@@ -3,12 +3,16 @@ package com.github.weaksloth.dolphins.process;
 import com.github.weaksloth.dolphins.remote.RequestHttpEntity;
 import com.github.weaksloth.dolphins.task.AbstractTask;
 import com.github.weaksloth.dolphins.util.JacksonUtils;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class TaskDefinition {
+public class TaskDefinition implements Serializable {
 
   private Long code;
 
