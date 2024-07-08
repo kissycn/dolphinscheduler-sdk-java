@@ -2,6 +2,7 @@ package com.github.weaksloth.dolphins.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -14,6 +15,10 @@ import java.lang.reflect.Type;
 public class JacksonUtils {
 
   private static final ObjectMapper mapper = new ObjectMapper();
+
+  static {
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+  }
 
   public static ObjectNode createObjectNode() {
     return mapper.createObjectNode();
