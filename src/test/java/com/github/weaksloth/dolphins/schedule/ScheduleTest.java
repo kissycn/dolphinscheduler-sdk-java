@@ -56,4 +56,16 @@ public class ScheduleTest extends BaseTest {
     long id = resp.get(0).getId();
     Assert.assertTrue(getClient().opsForSchedule().delete(projectCode, id));
   }
+
+  @Test
+  public void testPreview() {
+    ScheduleDefineParam.Schedule schedule = new ScheduleDefineParam.Schedule();
+    schedule.setStartTime("2024-07-08 00:00:00");
+    schedule.setEndTime("2124-07-08 00:00:00");
+    schedule.setCrontab("0 0 * * * ? *");
+    schedule.setTimezoneId("Asia/Shanghai");
+
+    List<String> preview = getClient().opsForSchedule().preview(projectCode, schedule);
+    System.out.println(preview);
+  }
 }

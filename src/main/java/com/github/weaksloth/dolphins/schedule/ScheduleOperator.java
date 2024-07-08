@@ -9,7 +9,11 @@ import com.github.weaksloth.dolphins.remote.DolphinsRestTemplate;
 import com.github.weaksloth.dolphins.remote.HttpRestResult;
 import com.github.weaksloth.dolphins.remote.Query;
 import com.github.weaksloth.dolphins.util.JacksonUtils;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -156,5 +160,24 @@ public class ScheduleOperator extends AbstractOperator {
     }
 
     return restResult.getSuccess();
+  }
+
+  public List<String> preview(Long projectCode,ScheduleDefineParam.Schedule schedule){
+    String url = dolphinAddress + "/projects/" + projectCode + "/schedules/preview";
+    log.info("schedules preview, schedule:{}, url:{}", schedule, url);
+
+    Map<String,ScheduleDefineParam.Schedule> params = new HashMap<>();
+    params.put("schedule",schedule);
+
+    HttpRestResult<JsonNode> restResult =
+            dolphinsRestTemplate.postForm(url, getHeader(), params, JsonNode.class);
+
+    if (restResult.getFailed()) {
+      throw new DolphinException(restResult.getCode(), restResult.getMsg());
+    }
+
+    return JacksonUtils.parseObject(
+                    restResult.getData().toString(),
+                    new TypeReference<List<String>>() {});
   }
 }
