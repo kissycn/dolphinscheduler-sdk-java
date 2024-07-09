@@ -1,54 +1,51 @@
 package com.github.weaksloth.dolphins.process.task;
 
-import com.github.weaksloth.dolphins.process.TaskDefinition;
 import com.github.weaksloth.dolphins.task.AbstractTask;
 import com.github.weaksloth.dolphins.task.DataxTask;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 /** DataxTaskDefinitionResp */
 @Data
-public class DataxTaskDefinitionResp{
-    private Long code;
+public class DataxTaskDefinitionResp {
+  private Long code;
 
-    private Integer version;
+  private Integer version;
 
-    /** the task node's name */
-    private String name;
+  /** the task node's name */
+  private String name;
 
-    /** the task node's description */
-    private String description;
+  /** the task node's description */
+  private String description;
 
-    /** get from {@link AbstractTask#getTaskType()} */
-    private String taskType;
+  /** get from {@link AbstractTask#getTaskType()} */
+  private String taskType;
 
-    /** NO:the node will not execute;YES:the node will execute,default is YES */
-    private String flag;
+  /** NO:the node will not execute;YES:the node will execute,default is YES */
+  private String flag;
 
-    private String taskPriority;
+  private String taskPriority;
 
-    private String workerGroup;
+  private String workerGroup;
 
-    private String failRetryTimes;
+  private String failRetryTimes;
 
-    private String failRetryInterval;
+  private String failRetryInterval;
 
-    private String timeoutFlag;
+  private String timeoutFlag;
 
-    private String timeoutNotifyStrategy;
+  private String timeoutNotifyStrategy;
 
-    private Integer timeout;
+  private Integer timeout;
 
-    private String delayTime;
+  private String delayTime;
 
-    private Integer environmentCode;
+  private Integer environmentCode;
 
-    private String taskExecuteType;
+  private String taskExecuteType;
 
-    private Integer cpuQuota;
+  private Integer cpuQuota;
 
-    private Long memoryMax;
+  private Long memoryMax;
 
-    private DataxTask taskParams;
+  private DataxTask taskParams;
 }

@@ -188,11 +188,22 @@ public class TaskTest extends BaseTest {
   }
 
   @Test
-  public void testGetDataxTask(){
+  public void testGetDataxTask() {
     DataxTaskDefinitionResp detail = getClient().opsForTask().detail(projectCode, 113477447296544L);
 
     System.out.println(detail);
-    //Long taskCode = getClient().opsForProcess().
+    // Long taskCode = getClient().opsForProcess().
+  }
 
+  @Test
+  public void testUpdateDataxTask() {
+    ShellTask shellTask = new ShellTask();
+    shellTask.setRawScript("echo 'hello dolphin scheduler java 1'");
+
+    // use utils to create task definition with default config
+    TaskDefinition taskDefinition =
+            TaskDefinitionUtils.createDefaultTaskDefinition(113739287877088L, shellTask);
+
+    getClient().opsForTask().update(projectCode, 113739287877088L,taskDefinition);
   }
 }

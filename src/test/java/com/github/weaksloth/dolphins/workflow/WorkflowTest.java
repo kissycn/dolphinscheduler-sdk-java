@@ -66,7 +66,8 @@ public class WorkflowTest extends BaseTest {
         .setTaskRelationJson(TaskRelationUtils.oneLineRelation(taskCodes.toArray(new Long[0])))
         .setGlobalParams(null);
 
-    System.out.println(getClient().opsForProcess().create(projectCode, pcr));
+    ProcessDefineResp processDefineResp = getClient().opsForProcess().create(projectCode, pcr);
+    System.out.println(processDefineResp);
   }
 
   @Test
