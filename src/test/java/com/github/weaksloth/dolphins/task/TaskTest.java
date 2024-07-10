@@ -202,8 +202,8 @@ public class TaskTest extends BaseTest {
 
     // use utils to create task definition with default config
     TaskDefinition taskDefinition =
-            TaskDefinitionUtils.createDefaultTaskDefinition(113739287877088L, shellTask);
+        TaskDefinitionUtils.createDefaultTaskDefinition(113739287877088L, shellTask);
 
-    getClient().opsForTask().update(projectCode, 113739287877088L,taskDefinition);
+    getClient().opsForTask().update(projectCode, 113739287877088L, taskDefinition);
   }
 }
