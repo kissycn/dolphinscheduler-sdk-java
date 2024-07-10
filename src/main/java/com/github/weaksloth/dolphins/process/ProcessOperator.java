@@ -154,9 +154,9 @@ public class ProcessOperator extends AbstractOperator {
       HttpRestResult<JsonNode> restResult =
           dolphinsRestTemplate.get(url, getHeader(), query, JsonNode.class);
 
-//      if (restResult.getFailed()) {
-//        throw new DolphinException(restResult.getCode(), restResult.getMsg());
-//      }
+      //      if (restResult.getFailed()) {
+      //        throw new DolphinException(restResult.getCode(), restResult.getMsg());
+      //      }
       return restResult.getFailed();
     } catch (Exception e) {
       throw new RuntimeException(e);
