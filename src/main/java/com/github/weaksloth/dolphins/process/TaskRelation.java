@@ -9,27 +9,27 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class TaskRelation {
-    private String name = "";
+  private String name = "";
 
-    private Long preTaskCode = 0L;
+  private Long preTaskCode = 0L;
 
-    private Integer preTaskVersion = 0;
+  private Integer preTaskVersion = 0;
 
-    private Long postTaskCode;
+  private Long postTaskCode;
 
-    private Integer postTaskVersion = 0;
+  private Integer postTaskVersion = 0;
 
-    private ConditionType conditionType = ConditionType.NONE;
+  private ConditionType conditionType = ConditionType.NONE;
 
-    private Integer conditionParams;
+  private Integer conditionParams;
 
-    /**
-     * must rewrite,then {@link RequestHttpEntity#bodyToMap()} can transfer object to json string
-     *
-     * @return object json string
-     */
-    @Override
-    public String toString() {
-        return JacksonUtils.toJSONString(this);
-    }
+  /**
+   * must rewrite,then {@link RequestHttpEntity#bodyToMap()} can transfer object to json string
+   *
+   * @return object json string
+   */
+  @Override
+  public String toString() {
+    return JacksonUtils.toJSONString(this);
+  }
 }
